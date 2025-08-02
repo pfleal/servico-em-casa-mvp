@@ -19,10 +19,15 @@ from src.routes.service import service_bp
 from src.routes.order import order_bp
 from src.routes.proposal import proposal_bp
 from src.routes.evaluation import evaluation_bp
+from src.utils.logging_config import setup_logging, setup_request_logging
 
 app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'static'))
 app.config['SECRET_KEY'] = 'asdf#FGSgvasgf$5$WGT'
 app.config['JWT_SECRET_KEY'] = 'jwt-secret-string'
+
+# Configuração de Logging
+setup_logging(app)
+setup_request_logging(app)
 
 # Configurações CORS
 CORS(app, origins="*")

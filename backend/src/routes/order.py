@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from src.models.user import db, User
 from src.models.request import ServiceRequest
@@ -15,6 +15,8 @@ def create_order():
         user_id = int(get_jwt_identity())
         data = request.get_json()
         
+        current_app.logger.info(f'Usuário {user_id} iniciando criação de pedido')
+        
         # Validações básicas
         required_fields = ['category_id', 'title', 'description', 'address', 'city', 'state', 'zip_code']
         for field in required_fields:
@@ -24,11 +26,13 @@ def create_order():
         # Verificar se a categoria existe
         category = ServiceCategory.query.get(data['category_id'])
         if not category:
+            current_app.logger.warning(f'Tentativa de criar pedido com categoria inexistente: {data["category_id"]} por usuário {user_id}')
             return jsonify({'error': 'Categoria não encontrada'}), 404
         
         # Verificar se o usuário é um cliente
         user = User.query.get(user_id)
-        if user.user_type != 'client':
+        if not user or user.user_type != 'client':
+            current_app.logger.warning(f'Usuário não-cliente {user_id} tentou criar pedido')
             return jsonify({'error': 'Apenas clientes podem criar pedidos'}), 403
         
         # Converter data preferida se fornecida
@@ -60,6 +64,8 @@ def create_order():
         db.session.add(service_request)
         db.session.commit()
         
+        current_app.logger.info(f'Pedido criado com sucesso: ID {service_request.id} por usuário {user_id} - {service_request.title}')
+        
         return jsonify({
             'message': 'Pedido criado com sucesso',
             'request': service_request.to_dict()
@@ -67,6 +73,7 @@ def create_order():
         
     except Exception as e:
         db.session.rollback()
+        current_app.logger.error(f'Erro na criação de pedido por usuário {user_id if "user_id" in locals() else "N/A"}: {str(e)}')
         return jsonify({'error': str(e)}), 500
 
 @order_bp.route('', methods=['GET'])

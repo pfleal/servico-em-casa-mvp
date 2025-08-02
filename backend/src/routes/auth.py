@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from src.models.user import User, db
 import re
@@ -13,6 +13,7 @@ def validate_email(email):
 def register():
     try:
         data = request.get_json()
+        current_app.logger.info(f'Tentativa de registro para email: {data.get("email", "N/A")}')
         
         # Validações básicas
         required_fields = ['name', 'email', 'password', 'user_type']
@@ -31,6 +32,7 @@ def register():
         
         # Verificar se o e-mail já existe
         if User.query.filter_by(email=data['email']).first():
+            current_app.logger.warning(f'Tentativa de registro com email já existente: {data["email"]}')
             return jsonify({'error': 'E-mail já cadastrado'}), 400
         
         # Criar novo usuário
@@ -52,6 +54,8 @@ def register():
         db.session.add(user)
         db.session.commit()
         
+        current_app.logger.info(f'Usuário registrado com sucesso: {user.email} (ID: {user.id})')
+        
         # Criar token de acesso
         access_token = create_access_token(identity=str(user.id))
         
@@ -63,12 +67,14 @@ def register():
         
     except Exception as e:
         db.session.rollback()
+        current_app.logger.error(f'Erro no registro: {str(e)}')
         return jsonify({'error': str(e)}), 500
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
     try:
         data = request.get_json()
+        current_app.logger.info(f'Tentativa de login para email: {data.get("email", "N/A")}')
         
         if not data.get('email') or not data.get('password'):
             return jsonify({'error': 'E-mail e senha são obrigatórios'}), 400
@@ -76,12 +82,16 @@ def login():
         user = User.query.filter_by(email=data['email']).first()
         
         if not user or not user.check_password(data['password']):
+            current_app.logger.warning(f'Tentativa de login falhada para email: {data.get("email", "N/A")}')
             return jsonify({'error': 'E-mail ou senha incorretos'}), 401
         
         if not user.is_active:
+            current_app.logger.warning(f'Tentativa de login com conta desativada: {user.email}')
             return jsonify({'error': 'Conta desativada'}), 401
         
         access_token = create_access_token(identity=str(user.id))
+        
+        current_app.logger.info(f'Login bem-sucedido para usuário: {user.email} (ID: {user.id})')
         
         return jsonify({
             'message': 'Login realizado com sucesso',
@@ -90,6 +100,7 @@ def login():
         }), 200
         
     except Exception as e:
+        current_app.logger.error(f'Erro no login: {str(e)}')
         return jsonify({'error': str(e)}), 500
 
 @auth_bp.route('/profile', methods=['GET'])
