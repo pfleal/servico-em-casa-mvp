@@ -1,6 +1,7 @@
 import os
+import os
 import sys
-# DON'T CHANGE THIS !!!
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from flask import Flask, send_from_directory, jsonify
@@ -8,6 +9,7 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_socketio import SocketIO
 from src.models.user import db
+from src.config import config
 from src.models.service import ServiceCategory, ProviderService
 from src.models.request import ServiceRequest
 from src.models.proposal import Proposal
@@ -22,8 +24,10 @@ from src.routes.evaluation import evaluation_bp
 from src.utils.logging_config import setup_logging, setup_request_logging
 
 app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'static'))
-app.config['SECRET_KEY'] = 'asdf#FGSgvasgf$5$WGT'
-app.config['JWT_SECRET_KEY'] = 'jwt-secret-string'
+
+# Configuração da aplicação
+config_name = os.environ.get('FLASK_ENV', 'development')
+app.config.from_object(config[config_name])
 
 # Configuração de Logging
 setup_logging(app)
@@ -34,8 +38,6 @@ CORS(app, origins="*")
 
 # Configurações JWT
 jwt = JWTManager(app)
-app.config['JWT_ACCESS_TOKEN_EXPIRES'] = False
-app.config['JWT_ALGORITHM'] = 'HS256'
 
 
 
@@ -51,8 +53,6 @@ app.register_blueprint(proposal_bp, url_prefix='/api/proposals')
 app.register_blueprint(evaluation_bp, url_prefix='/api/evaluations')
 
 # Configuração do banco de dados
-app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(os.path.dirname(__file__), 'database', 'app.db')}"
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 with app.app_context():
     db.create_all()
