@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from src.models.user import User, db
 import re
@@ -53,7 +53,7 @@ def register():
         db.session.commit()
         
         # Criar token de acesso
-        access_token = create_access_token(identity=user.id)
+        access_token = create_access_token(identity=str(user.id))
         
         return jsonify({
             'message': 'Usuário criado com sucesso',
@@ -63,7 +63,11 @@ def register():
         
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': str(e)}), 500
+        print(f"Erro no registro: {str(e)}")
+        return jsonify({
+            'error': 'Erro interno do servidor ao criar usuário',
+            'details': str(e) if current_app.debug else 'Contate o suporte'
+        }), 500
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
@@ -81,7 +85,7 @@ def login():
         if not user.is_active:
             return jsonify({'error': 'Conta desativada'}), 401
         
-        access_token = create_access_token(identity=user.id)
+        access_token = create_access_token(identity=str(user.id))
         
         return jsonify({
             'message': 'Login realizado com sucesso',
@@ -90,13 +94,17 @@ def login():
         }), 200
         
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        print(f"Erro no login: {str(e)}")
+        return jsonify({
+            'error': 'Erro interno do servidor ao fazer login',
+            'details': str(e) if current_app.debug else 'Contate o suporte'
+        }), 500
 
 @auth_bp.route('/profile', methods=['GET'])
 @jwt_required()
 def get_profile():
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         user = User.query.get(user_id)
         
         if not user:
@@ -105,13 +113,17 @@ def get_profile():
         return jsonify({'user': user.to_dict()}), 200
         
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        print(f"Erro ao buscar perfil: {str(e)}")
+        return jsonify({
+            'error': 'Erro interno do servidor ao buscar perfil',
+            'details': str(e) if current_app.debug else 'Contate o suporte'
+        }), 500
 
 @auth_bp.route('/profile', methods=['PUT'])
 @jwt_required()
 def update_profile():
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         user = User.query.get(user_id)
         
         if not user:
@@ -138,5 +150,9 @@ def update_profile():
         
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': str(e)}), 500
+        print(f"Erro ao atualizar perfil: {str(e)}")
+        return jsonify({
+            'error': 'Erro interno do servidor ao atualizar perfil',
+            'details': str(e) if current_app.debug else 'Contate o suporte'
+        }), 500
 

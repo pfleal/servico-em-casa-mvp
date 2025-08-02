@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from src.models.user import db, User
 from src.models.request import ServiceRequest
@@ -66,13 +66,17 @@ def create_proposal():
         
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': str(e)}), 500
+        print(f"Erro ao criar proposta: {str(e)}")
+        return jsonify({
+            'error': 'Erro interno do servidor ao criar proposta',
+            'details': str(e) if current_app.debug else 'Contate o suporte'
+        }), 500
 
 @proposal_bp.route('/request/<int:request_id>', methods=['GET'])
 @jwt_required()
 def get_proposals_by_request(request_id):
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         
         # Verificar se o pedido existe
         service_request = ServiceRequest.query.get(request_id)
@@ -104,13 +108,17 @@ def get_proposals_by_request(request_id):
         return jsonify({'proposals': proposals_data}), 200
         
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        print(f"Erro ao buscar propostas: {str(e)}")
+        return jsonify({
+            'error': 'Erro interno do servidor ao buscar propostas',
+            'details': str(e) if current_app.debug else 'Contate o suporte'
+        }), 500
 
 @proposal_bp.route('/<int:proposal_id>/accept', methods=['POST'])
 @jwt_required()
 def accept_proposal(proposal_id):
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         
         proposal = Proposal.query.get(proposal_id)
         if not proposal:
@@ -149,13 +157,17 @@ def accept_proposal(proposal_id):
         
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': str(e)}), 500
+        print(f"Erro ao aceitar proposta: {str(e)}")
+        return jsonify({
+            'error': 'Erro interno do servidor ao aceitar proposta',
+            'details': str(e) if current_app.debug else 'Contate o suporte'
+        }), 500
 
 @proposal_bp.route('/<int:proposal_id>/reject', methods=['POST'])
 @jwt_required()
 def reject_proposal(proposal_id):
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         
         proposal = Proposal.query.get(proposal_id)
         if not proposal:
@@ -180,13 +192,17 @@ def reject_proposal(proposal_id):
         
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': str(e)}), 500
+        print(f"Erro ao rejeitar proposta: {str(e)}")
+        return jsonify({
+            'error': 'Erro interno do servidor ao rejeitar proposta',
+            'details': str(e) if current_app.debug else 'Contate o suporte'
+        }), 500
 
 @proposal_bp.route('/my-proposals', methods=['GET'])
 @jwt_required()
 def get_my_proposals():
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         
         proposals = Proposal.query.filter_by(provider_id=user_id).order_by(Proposal.created_at.desc()).all()
         
@@ -215,5 +231,9 @@ def get_my_proposals():
         return jsonify({'proposals': proposals_data}), 200
         
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        print(f"Erro ao buscar minhas propostas: {str(e)}")
+        return jsonify({
+            'error': 'Erro interno do servidor ao buscar minhas propostas',
+            'details': str(e) if current_app.debug else 'Contate o suporte'
+        }), 500
 

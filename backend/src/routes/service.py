@@ -52,7 +52,7 @@ def create_category():
 @jwt_required()
 def add_provider_service():
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         data = request.get_json()
         
         if not data.get('category_id'):

@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from src.models.user import db, User
 from src.models.request import ServiceRequest
@@ -12,7 +12,7 @@ evaluation_bp = Blueprint('evaluation', __name__)
 @jwt_required()
 def create_evaluation():
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         data = request.get_json()
         
         # Validações básicas
@@ -116,7 +116,11 @@ def create_evaluation():
         
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': str(e)}), 500
+        print(f"Erro ao criar avaliação: {str(e)}")
+        return jsonify({
+            'error': 'Erro interno do servidor ao criar avaliação',
+            'details': str(e) if current_app.debug else 'Contate o suporte'
+        }), 500
 
 @evaluation_bp.route('/user/<int:user_id>', methods=['GET'])
 def get_user_evaluations(user_id):
@@ -147,13 +151,17 @@ def get_user_evaluations(user_id):
         }), 200
         
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        print(f"Erro ao buscar avaliações do usuário: {str(e)}")
+        return jsonify({
+            'error': 'Erro interno do servidor ao buscar avaliações do usuário',
+            'details': str(e) if current_app.debug else 'Contate o suporte'
+        }), 500
 
 @evaluation_bp.route('/request/<int:request_id>', methods=['GET'])
 @jwt_required()
 def get_request_evaluations(request_id):
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         
         # Verificar se o pedido existe
         service_request = ServiceRequest.query.get(request_id)
@@ -199,13 +207,17 @@ def get_request_evaluations(request_id):
         return jsonify({'evaluations': evaluations_data}), 200
         
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        print(f"Erro ao buscar avaliações do pedido: {str(e)}")
+        return jsonify({
+            'error': 'Erro interno do servidor ao buscar avaliações do pedido',
+            'details': str(e) if current_app.debug else 'Contate o suporte'
+        }), 500
 
 @evaluation_bp.route('/my-evaluations', methods=['GET'])
 @jwt_required()
 def get_my_evaluations():
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         
         # Avaliações recebidas
         received = Evaluation.query.filter_by(evaluated_id=user_id).order_by(Evaluation.created_at.desc()).all()
@@ -241,5 +253,9 @@ def get_my_evaluations():
         }), 200
         
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        print(f"Erro ao buscar minhas avaliações: {str(e)}")
+        return jsonify({
+            'error': 'Erro interno do servidor ao buscar suas avaliações',
+            'details': str(e) if current_app.debug else 'Contate o suporte'
+        }), 500
 
