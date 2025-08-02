@@ -59,11 +59,11 @@ export const serviceAPI = {
 
 // Funções de pedidos
 export const requestAPI = {
-  createRequest: (requestData) => api.post('/requests', requestData),
-  getRequests: () => api.get('/requests'),
-  getRequestDetail: (requestId) => api.get(`/requests/${requestId}`),
-  updateRequest: (requestId, requestData) => api.put(`/requests/${requestId}`, requestData),
-  deleteRequest: (requestId) => api.delete(`/requests/${requestId}`),
+  createRequest: (requestData) => api.post('/orders', requestData),
+  getRequests: () => api.get('/orders'),
+  getRequestDetail: (requestId) => api.get(`/orders/${requestId}`),
+  updateRequest: (requestId, requestData) => api.put(`/orders/${requestId}`, requestData),
+  deleteRequest: (requestId) => api.delete(`/orders/${requestId}`),
 };
 
 // Funções de propostas

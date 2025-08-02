@@ -53,7 +53,7 @@ def register():
         db.session.commit()
         
         # Criar token de acesso
-        access_token = create_access_token(identity=user.id)
+        access_token = create_access_token(identity=str(user.id))
         
         return jsonify({
             'message': 'Usuário criado com sucesso',
@@ -81,7 +81,7 @@ def login():
         if not user.is_active:
             return jsonify({'error': 'Conta desativada'}), 401
         
-        access_token = create_access_token(identity=user.id)
+        access_token = create_access_token(identity=str(user.id))
         
         return jsonify({
             'message': 'Login realizado com sucesso',
@@ -96,7 +96,7 @@ def login():
 @jwt_required()
 def get_profile():
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         user = User.query.get(user_id)
         
         if not user:
@@ -111,7 +111,7 @@ def get_profile():
 @jwt_required()
 def update_profile():
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         user = User.query.get(user_id)
         
         if not user:

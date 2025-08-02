@@ -12,7 +12,7 @@ evaluation_bp = Blueprint('evaluation', __name__)
 @jwt_required()
 def create_evaluation():
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         data = request.get_json()
         
         # Validações básicas
@@ -153,7 +153,7 @@ def get_user_evaluations(user_id):
 @jwt_required()
 def get_request_evaluations(request_id):
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         
         # Verificar se o pedido existe
         service_request = ServiceRequest.query.get(request_id)
@@ -205,7 +205,7 @@ def get_request_evaluations(request_id):
 @jwt_required()
 def get_my_evaluations():
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         
         # Avaliações recebidas
         received = Evaluation.query.filter_by(evaluated_id=user_id).order_by(Evaluation.created_at.desc()).all()

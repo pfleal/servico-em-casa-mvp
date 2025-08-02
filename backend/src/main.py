@@ -3,7 +3,7 @@ import sys
 # DON'T CHANGE THIS !!!
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
-from flask import Flask, send_from_directory
+from flask import Flask, send_from_directory, jsonify
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_socketio import SocketIO
@@ -16,7 +16,7 @@ from src.models.message import Message
 from src.routes.user import user_bp
 from src.routes.auth import auth_bp
 from src.routes.service import service_bp
-from src.routes.request import request_bp
+from src.routes.order import order_bp
 from src.routes.proposal import proposal_bp
 from src.routes.evaluation import evaluation_bp
 
@@ -29,6 +29,10 @@ CORS(app, origins="*")
 
 # Configurações JWT
 jwt = JWTManager(app)
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = False
+app.config['JWT_ALGORITHM'] = 'HS256'
+
+
 
 # Configurações SocketIO
 socketio = SocketIO(app, cors_allowed_origins="*")
@@ -37,7 +41,7 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 app.register_blueprint(user_bp, url_prefix='/api')
 app.register_blueprint(auth_bp, url_prefix='/api/auth')
 app.register_blueprint(service_bp, url_prefix='/api/services')
-app.register_blueprint(request_bp, url_prefix='/api/requests')
+app.register_blueprint(order_bp, url_prefix='/api/orders')
 app.register_blueprint(proposal_bp, url_prefix='/api/proposals')
 app.register_blueprint(evaluation_bp, url_prefix='/api/evaluations')
 

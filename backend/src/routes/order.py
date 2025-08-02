@@ -5,13 +5,14 @@ from src.models.request import ServiceRequest
 from src.models.service import ServiceCategory
 from datetime import datetime
 
-request_bp = Blueprint('request', __name__)
+order_bp = Blueprint('order', __name__)
 
-@request_bp.route('/', methods=['POST'])
+@order_bp.route('', methods=['POST'])
+@order_bp.route('/', methods=['POST'])
 @jwt_required()
-def create_request():
+def create_order():
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         data = request.get_json()
         
         # Validações básicas
@@ -68,11 +69,12 @@ def create_request():
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
-@request_bp.route('/', methods=['GET'])
+@order_bp.route('', methods=['GET'])
+@order_bp.route('/', methods=['GET'])
 @jwt_required()
 def get_requests():
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         user = User.query.get(user_id)
         
         if user.user_type == 'client':
@@ -90,7 +92,7 @@ def get_requests():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@request_bp.route('/<int:request_id>', methods=['GET'])
+@order_bp.route('/<int:request_id>', methods=['GET'])
 @jwt_required()
 def get_request_detail(request_id):
     try:
@@ -117,11 +119,11 @@ def get_request_detail(request_id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@request_bp.route('/<int:request_id>', methods=['PUT'])
+@order_bp.route('/<int:request_id>', methods=['PUT'])
 @jwt_required()
 def update_request(request_id):
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         service_request = ServiceRequest.query.get(request_id)
         
         if not service_request:
@@ -160,11 +162,11 @@ def update_request(request_id):
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
-@request_bp.route('/<int:request_id>', methods=['DELETE'])
+@order_bp.route('/<int:request_id>', methods=['DELETE'])
 @jwt_required()
 def delete_request(request_id):
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         service_request = ServiceRequest.query.get(request_id)
         
         if not service_request:

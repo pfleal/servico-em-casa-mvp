@@ -10,7 +10,7 @@ proposal_bp = Blueprint('proposal', __name__)
 @jwt_required()
 def create_proposal():
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         data = request.get_json()
         
         # Validações básicas
@@ -72,7 +72,7 @@ def create_proposal():
 @jwt_required()
 def get_proposals_by_request(request_id):
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         
         # Verificar se o pedido existe
         service_request = ServiceRequest.query.get(request_id)
@@ -110,7 +110,7 @@ def get_proposals_by_request(request_id):
 @jwt_required()
 def accept_proposal(proposal_id):
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         
         proposal = Proposal.query.get(proposal_id)
         if not proposal:
@@ -155,7 +155,7 @@ def accept_proposal(proposal_id):
 @jwt_required()
 def reject_proposal(proposal_id):
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         
         proposal = Proposal.query.get(proposal_id)
         if not proposal:
@@ -186,7 +186,7 @@ def reject_proposal(proposal_id):
 @jwt_required()
 def get_my_proposals():
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         
         proposals = Proposal.query.filter_by(provider_id=user_id).order_by(Proposal.created_at.desc()).all()
         
