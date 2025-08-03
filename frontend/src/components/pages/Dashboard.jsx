@@ -19,6 +19,7 @@ import {
   MapPin,
   Calendar
 } from 'lucide-react';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 import './../../App.css';
 
 const Dashboard = () => {
@@ -90,9 +91,9 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-card shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
@@ -125,6 +126,8 @@ const Dashboard = () => {
                   Perfil
                 </Button>
               </Link>
+              
+              <ThemeToggle />
               
               <Button variant="ghost" size="sm" onClick={logout}>
                 <LogOut className="h-4 w-4 mr-2" />

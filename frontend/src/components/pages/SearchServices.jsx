@@ -16,6 +16,7 @@ import {
   Filter,
   ArrowLeft
 } from 'lucide-react';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 import './../../App.css';
 
 const SearchServices = () => {
@@ -64,9 +65,11 @@ const SearchServices = () => {
   };
 
   const handleInputChange = (field, value) => {
+    // Converter "all" para string vazia para manter compatibilidade
+    const processedValue = value === 'all' ? '' : value;
     setSearchParams(prev => ({
       ...prev,
-      [field]: value
+      [field]: processedValue
     }));
   };
 
@@ -75,9 +78,9 @@ const SearchServices = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-card shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
@@ -91,6 +94,10 @@ const SearchServices = () => {
                 <HomeIcon className="h-8 w-8 text-blue-600 mr-2" />
                 <h1 className="text-2xl font-bold text-gray-900">Serviço em Casa</h1>
               </Link>
+            </div>
+            
+            <div className="flex items-center">
+              <ThemeToggle />
             </div>
           </div>
         </div>
@@ -141,7 +148,7 @@ const SearchServices = () => {
                         <SelectValue placeholder="Todas as categorias" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">Todas as categorias</SelectItem>
+                        <SelectItem value="all">Todas as categorias</SelectItem>
                         {categories.map((category) => (
                           <SelectItem key={category.id} value={category.id.toString()}>
                             {category.name}
@@ -184,7 +191,7 @@ const SearchServices = () => {
                         <SelectValue placeholder="Qualquer avaliação" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">Qualquer avaliação</SelectItem>
+                        <SelectItem value="all">Qualquer avaliação</SelectItem>
                         <SelectItem value="4">4+ estrelas</SelectItem>
                         <SelectItem value="3">3+ estrelas</SelectItem>
                         <SelectItem value="2">2+ estrelas</SelectItem>
