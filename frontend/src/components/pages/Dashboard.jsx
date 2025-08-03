@@ -7,7 +7,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
-  Home as HomeIcon, 
   Plus, 
   Search, 
   User, 
@@ -20,6 +19,7 @@ import {
   Calendar
 } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
+import Logo from '../../assets/logo.svg';
 import './../../App.css';
 
 const Dashboard = () => {
@@ -98,8 +98,7 @@ const Dashboard = () => {
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
               <Link to="/" className="flex items-center">
-                <HomeIcon className="h-8 w-8 text-blue-600 mr-2" />
-                <h1 className="text-2xl font-bold text-gray-900">Serviço em Casa</h1>
+                <img src={Logo} alt="Serviço em Casa" className="h-12 w-auto opacity-80" />
               </Link>
             </div>
             

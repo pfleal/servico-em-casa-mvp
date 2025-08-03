@@ -7,7 +7,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Home as HomeIcon, User, Mail, Lock, Phone, MapPin, Loader2 } from 'lucide-react';
+import { User, Mail, Lock, Phone, MapPin, Loader2 } from 'lucide-react';
+import Logo from '../../assets/logo.svg';
 import './../../App.css';
 
 const Register = () => {
@@ -81,9 +82,8 @@ const Register = () => {
       <div className="w-full max-w-2xl">
         {/* Header */}
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center text-2xl font-bold text-gray-900 mb-2">
-            <HomeIcon className="h-8 w-8 text-blue-600 mr-2" />
-            Serviço em Casa
+          <Link to="/" className="inline-flex items-center mb-2">
+            <img src={Logo} alt="Serviço em Casa" className="h-16 w-auto opacity-80" />
           </Link>
           <p className="text-gray-600">Crie sua conta gratuita</p>
         </div>

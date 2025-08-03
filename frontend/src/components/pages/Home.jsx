@@ -2,7 +2,8 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
-import { Home as HomeIcon, Search, Users, Star, Shield, Clock } from 'lucide-react';
+import { Search, Users, Star, Shield, Clock } from 'lucide-react';
+import Logo from '../../assets/logo.svg';
 import './../../App.css';
 
 const Home = () => {
@@ -13,8 +14,11 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center">
-              <HomeIcon className="h-8 w-8 text-blue-600 mr-2" />
-              <h1 className="text-2xl font-bold text-gray-900">Serviço em Casa</h1>
+              <img src={Logo} alt="Serviço em Casa" className="h-16 w-auto mr-3" />
+              <div className="flex flex-col">
+                <h1 className="text-xl font-bold text-gray-900">Serviço em Casa</h1>
+                <p className="text-sm text-gray-600">Tudo o que sua casa precisa, num só lugar.</p>
+              </div>
             </div>
             <div className="flex items-center space-x-4">
               <ThemeToggle />
@@ -184,7 +188,7 @@ const Home = () => {
       <footer className="bg-gray-900 text-white py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="flex items-center justify-center mb-4">
-            <HomeIcon className="h-6 w-6 mr-2" />
+            <img src={Logo} alt="Serviço em Casa" className="h-8 w-8 mr-2" />
             <span className="text-lg font-semibold">Serviço em Casa</span>
           </div>
           <p className="text-gray-400">

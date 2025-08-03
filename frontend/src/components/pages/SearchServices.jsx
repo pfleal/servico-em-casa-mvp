@@ -8,7 +8,6 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { 
-  Home as HomeIcon, 
   Search, 
   MapPin, 
   Star, 
@@ -17,6 +16,7 @@ import {
   ArrowLeft
 } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
+import Logo from '../../assets/logo.svg';
 import './../../App.css';
 
 const SearchServices = () => {
@@ -91,8 +91,7 @@ const SearchServices = () => {
                 </Button>
               </Link>
               <Link to="/" className="flex items-center">
-                <HomeIcon className="h-8 w-8 text-blue-600 mr-2" />
-                <h1 className="text-2xl font-bold text-gray-900">Serviço em Casa</h1>
+                <img src={Logo} alt="Serviço em Casa" className="h-12 w-auto opacity-80" />
               </Link>
             </div>
             

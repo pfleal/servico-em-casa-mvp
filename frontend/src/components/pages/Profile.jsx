@@ -10,7 +10,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
-  Home as HomeIcon, 
   ArrowLeft, 
   User, 
   Star, 
@@ -23,6 +22,7 @@ import {
   Calendar
 } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
+import Logo from '../../assets/logo.svg';
 import './../../App.css';
 
 const Profile = () => {
@@ -126,8 +126,7 @@ const Profile = () => {
                 </Button>
               </Link>
               <Link to="/" className="flex items-center">
-                <HomeIcon className="h-8 w-8 text-blue-600 mr-2" />
-                <h1 className="text-2xl font-bold text-gray-900">Serviço em Casa</h1>
+                <img src={Logo} alt="Serviço em Casa" className="h-12 w-auto opacity-80" />
               </Link>
             </div>
             
