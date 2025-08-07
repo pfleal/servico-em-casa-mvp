@@ -81,8 +81,18 @@ def login():
         
         user = User.query.filter_by(email=data['email']).first()
         
-        if not user or not user.check_password(data['password']):
-            current_app.logger.warning(f'Tentativa de login falhada para email: {data.get("email", "N/A")}')
+        # Log detalhado para debug
+        if not user:
+            current_app.logger.warning(f'Usuário não encontrado para email: {data.get("email", "N/A")}')
+            return jsonify({'error': 'E-mail ou senha incorretos'}), 401
+        
+        current_app.logger.info(f'Usuário encontrado: ID={user.id}, Email={user.email}, Ativo={user.is_active}')
+        
+        password_check = user.check_password(data['password'])
+        current_app.logger.info(f'Verificação de senha para {user.email}: {password_check}')
+        
+        if not password_check:
+            current_app.logger.warning(f'Senha incorreta para email: {data.get("email", "N/A")}')
             return jsonify({'error': 'E-mail ou senha incorretos'}), 401
         
         if not user.is_active:

@@ -3,6 +3,8 @@ node_modules/
 */node_modules/
 venv/
 */venv/
+.venv/
+*/.venv/
 __pycache__/
 */__pycache__/
 *.pyc
@@ -47,6 +49,39 @@ Thumbs.db
 tmp/
 temp/
 *.tmp
+
+# Arquivos compactados
+*.rar
+*.zip
+*.tar.gz
+*.7z
+
+# Chaves e certificados
+*.pem
+*.key
+*.crt
+*.p12
+
+# Arquivos de configuração sensíveis
+config.ini
+secrets.json
+
+# Cache
+.cache/
+*.cache
+
+# Arquivos de lock específicos
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Diretórios de ferramentas
+browser-tools-mcp/
+
+# Arquivos de backup
+*.bak
+*.backup
+*~
 
 # Screenshots
 screenshots/
